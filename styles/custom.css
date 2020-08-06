@@ -1,0 +1,23 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.custom-header {
+  color: #ffffff;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+@media (min-width: 1350px) {
+  .container {
+    max-width: 1800px;
+  }
+}
+
+/* @media (min-width: 520px) {
+  .btn {
+    margin-bottom: 10px;
+  }
+} */
