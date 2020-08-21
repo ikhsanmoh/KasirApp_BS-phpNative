@@ -1,15 +1,16 @@
 <?php
 
-  // Mengambil Base URL
-  include "../../../config/url-base.php";
+// Mengambil Base URL
+include "../../../config/url-base.php";
 
-  // Mengecek Status Login Session
-  require_once "../../auth/login-session.php";
+// Mengecek Status Login Session
+require_once "../../auth/login-session.php";
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,6 +29,7 @@
   <link rel="stylesheet" href="<? echo $base ?>./styles/custom.css">
 
 </head>
+
 <body>
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -35,7 +37,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -55,7 +57,7 @@
 
         <!-- Includes Navbar Kanan -->
         <? include "../../includes/navbar-right.php" ?>
-        
+
       </ul>
     </div>
   </nav>
@@ -83,59 +85,128 @@
       <div class="col-md-9">
 
         <div class="card mb-3">
-          <div class="card-header">Header</div>
+          <div class="card-header">Product List</div>
           <div class="card-body">
 
             <div class="p-2 mb-2">
               <a class="btn btn-md btn-primary" href="<? echo $base ?>./app/pages/products/add-product.php" role="button">Add New Product</a>
             </div>
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Code</th>
-                  <th scope="col">Product Name</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>KD001</td>
-                  <td>Asus A3</td>
-                  <td>Laptop</td>
-                  <td>10</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/products/add-product.php" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>KD002</td>
-                  <td>MSI 2PL</td>
-                  <td>Laptop</td>
-                  <td>5</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/products/edit-product.php" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>KD003</td>
-                  <td>Seagate 500GB</td>
-                  <td>Hardisk</td>
-                  <td>50</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/products/edit-product.php" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+            <?php if (isset($_GET['status']) && $_GET['status'] == "sukses_add") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil menambah Produk baru!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_add") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal menambah Produk baru!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "sukses_update") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil memperbaharui Produk!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_update") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal memperbaharui Produk!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "sukses_delete") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil menghapus Produk!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_delete") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal menghapus Produk!
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+
+            <?php
+            // Memanggil Koneksi
+            require_once "../../../config/koneksi.php";
+
+            // Query Select data pada 2 tabel yang berelasi
+            $query = "SELECT 
+                          id_produk, nama, nama_kat, stok, harga
+                        FROM 
+                          tb_products 
+                        INNER JOIN 
+                          tb_categories 
+                        ON 
+                        tb_products.id_kat = tb_categories.id_kat;";
+
+            $sql = mysqli_query($koneksi, $query);
+            $no = 1;
+            ?>
+
+            <div class="table-responsive-lg">
+              <table class="table table-striped table-sm" id="productsTable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Kode</th>
+                    <th scope="col">Nama Produk</th>
+                    <th scope="col">Kartegori</th>
+                    <th scope="col">Harga</th>
+                    <th scope="col">Stok</th>
+                    <th scope="col">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <?php while ($data = mysqli_fetch_assoc($sql)) : ?>
+
+                    <tr>
+                      <th scope="row"><?php echo $no++; ?></th>
+                      <td>KD<?php echo $data['id_produk']; ?></td>
+                      <td><?php echo ucfirst($data['nama']); ?></td>
+                      <td><?php echo ucfirst($data['nama_kat']); ?></td>
+                      <td>Rp. <?php echo number_format($data['harga'], 0, '', '.'); ?></td>
+                      <td><?php echo $data['stok']; ?></td>
+                      <td>
+                        <a href="edit-product.php?id=<?php echo $data['id_produk']; ?>" class="btn btn-info btn-sm" role="button">Edit</a>
+                        <a href="proses-delete-product.php?id=<?php echo $data['id_produk']; ?>" class="btn btn-danger btn-sm" role="button" onclick='return confirm("Yakin Hapus?")'>Delete</a>
+                      </td>
+                    </tr>
+
+                  <?php endwhile; ?>
+
+                </tbody>
+              </table>
+            </div>
 
           </div>
         </div>
@@ -149,15 +220,27 @@
       <span class="text-muted">&copy; Ikhsan Mohamad 2020</span>
     </div>
   </footer>
-  
+
   <!-- Jquery Core JS -->
   <script src="<? echo $base ?>./scripts/jquery-3.5.1.min.js"></script>
-  
+
   <!-- Bootstrap Core JS -->
   <script src="<? echo $base ?>./scripts/bootstrap.min.js"></script>
-  
+
   <!-- Plugin Datatables Core JS -->
   <script src="<? echo $base ?>./scripts/datatables.min.js"></script>
 
+  <!-- JS untuk Plugin untuk Filtering -->
+  <script>
+    // Menghilangkan Pesan Alert dalam beberapa detik
+    $('.alert').delay(3000).fadeOut(300);
+
+    // Plugin Pagination dan Filter menggunakan Datatables
+    $(document).ready(function() {
+      $('#productsTable').DataTable();
+    });
+  </script>
+
 </body>
+
 </html>

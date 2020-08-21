@@ -86,27 +86,86 @@
         <div class="card mb-3">
           <div class="card-header">Add User</div>
           <div class="card-body">
+
+            <?php if ( isset($_GET['status']) && $_GET['status'] == "err_01") : ?>
+                
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Nama</strong> atau <strong>Email</strong> sudah terdaftar!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif ( isset($_GET['status']) && $_GET['status'] == "err_02") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Password</strong> dan <strong>Konfirmasi Password</strong> harus sama persis!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
           
-            <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/users/proses-add-user.php" method="post">
+            <form class="w-75 mx-auto" action="<?php echo $base; ?>app/pages/users/proses-add-user.php" method="post">
               <div class="form-group">
-                <label for="nama">Name</label>
+                <label for="nama">Nama</label>
                 <input type="text" class="form-control" id="nama" name="nama" required>
+              </div>
+              <div class="form-group">
+                <label for="jenis_kelamin">Jenis Kelamin</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="jenis_kelamin" id="l" value="L" checked>
+                  <label class="form-check-label" for="l">
+                    Laki-laki
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="jenis_kelamin" id="p" value="P">
+                  <label class="form-check-label" for="p">
+                    Perempuan
+                  </label>
+                </div>
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>
               </div>
               <div class="form-group">
+              <label for="lv">Level</label>
+                <select class="form-control" name="level">
+                  <option>-- Pilih --</option>
+                  <option value="admin">admin</option>
+                  <option value="kasir">kasir</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Alamat</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" name="alamat" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="no_telepon">Nomor Telepon</label>
+                <input type="number" class="form-control" id="email" name="no_telepon" required>
+              </div>
+              <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
               </div>
               <div class="form-group">
-                <label for="konfirm_password">Confirm Password</label>
+                <label for="konfirm_password">Konfirmasi Password</label>
                 <input type="password" class="form-control" id="konfirm_password" name="konfirm_password" required>
               </div>
 
               <div class="form-group float-right">
-                <a href="<? echo $base; ?>app/pages/users/user.php" role="button" class="btn btn-danger">Cancel</a>
+                <a href="<?php echo $base; ?>app/pages/users/user.php" role="button" class="btn btn-danger">Cancel</a>
                 <input type="submit" class="btn btn-success" name="form_add_user">
               </div>
             </form>

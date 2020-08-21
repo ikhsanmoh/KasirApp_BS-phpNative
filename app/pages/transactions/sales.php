@@ -1,14 +1,15 @@
 <?php
 
-  // Mengambil Base URL
-  include "../../../config/url-base.php";
+// Mengambil Base URL
+include "../../../config/url-base.php";
 
-  // Mengecek Status Login Session
-  require_once "../../auth/login-session.php";
+// Mengecek Status Login Session
+require_once "../../auth/login-session.php";
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +28,7 @@
   <link rel="stylesheet" href="<? echo $base ?>./styles/custom.css">
 
 </head>
+
 <body>
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -34,7 +36,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -54,7 +56,7 @@
 
         <!-- Includes Navbar Kanan -->
         <? include "../../includes/navbar-right.php" ?>
-        
+
       </ul>
     </div>
   </nav>
@@ -86,61 +88,58 @@
           <div class="card-body">
             <div class="row mb-3">
               <div class="col-lg-8">
-                <form action="" method="post">
-                  
-                  <!-- <fieldset style="border: 1px solid gray; padding: 20px; border-radius: 20px;"> -->
-                  
+
+                <form method="post" id="formSelectedItem" onsubmit="return false">
+
                   <div class="card">
                     <div class="card-body">
                       <div class="form-row">
                         <div class="form-group col-md-4">
                           <label for="inputAddress">Kode Barang</label>
                           <div class="input-group">
-                            <input type="text" class="form-control" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" id="kd_item" aria-describedby="basic-addon2" readonly>
                             <div class="input-group-append">
                               <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#productModal" type="button">Cari</button>
                             </div>
                           </div>
                         </div>
                         <div class="form-group col-md-8">
-                          <label for="inputAddress2">Nama Barang</label>
-                          <input type="text" class="form-control" id="inputAddress2" value="Asus D2zs" disabled>
+                          <label for="nama_item">Nama Barang</label>
+                          <input type="text" class="form-control" id="nama_item" value="" readonly>
                         </div>
                       </div>
                       <div class="form-row">
                         <div class="form-group col-md-8">
-                          <label for="inputCity">Harga Satuan</label>
-                          <input type="text" class="form-control" id="inputCity" value="Rp. 15.500.000" disabled>
+                          <label for="harga_item">Harga Satuan</label>
+                          <input type="text" class="form-control" id="harga_item" value="" readonly>
                         </div>
                         <div class="form-group col-md-4">
-                          <label for="inputState">Diskon</label>
-                          <select id="inputState" class="form-control">
-                            <option selected>--- Pilih ---</option>
-                            <option value="1">10%</option>
-                            <option value="2">30%</option>
-                            <option value="3">50%</option>
+                          <label for="diskon_item">Diskon</label>
+                          <select id="diskon_item" class="form-control">
+                            <option value="0" selected>0%</option>
+                            <option value="10">10%</option>
+                            <option value="30">30%</option>
+                            <option value="50">50%</option>
                           </select>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="input3">Jumlah</label>
-                        <input type="number" class="form-control" id="input3" placeholder="Masukan Jumlah Barang">
+                        <label for="jumlah_item">Jumlah</label>
+                        <input type="number" class="form-control" id="jumlah_item" placeholder="Masukan Jumlah Barang">
                       </div>
-                      <button type="submit" class="btn btn-primary">Tambah</button>
+                      <button type="submit" class="btn btn-primary" onclick="insertItemToCart()">Tambah</button>
                     </div>
                   </div>
-
-                  <!-- </fieldset> -->
 
                 </form>
               </div>
 
               <div class="col-lg-4">
-              
+
                 <div class="card">
                   <div class="card-body">
-                    <h1 class="h5">Invoice <small class="font-weight-bold">00191</small></h1>
-                    <h1 class="h4 font-weight-bold">Rp. 15.000.000</h1>
+                    <h1 class="h5">Invoice <small class="font-weight-bold" id="invoice_number"></small></h1>
+                    <h1 class="h4 font-weight-bold" id="inv_total_harga">Rp. 15.000.000</h1>
                   </div>
                 </div>
 
@@ -151,68 +150,65 @@
 
                 <div class="card">
                   <div class="card-body">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Code</th>
-                          <th scope="col">Product Name</th>
-                          <th scope="col">Price</th>
-                          <th scope="col">Qty</th>
-                          <th scope="col">Sub Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>KD001</td>
-                          <td>ASUS D21</td>
-                          <td>Rp. 15.500.000</td>
-                          <td>2</td>
-                          <td>Rp. 31.000.000</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <div class="table-responsive-lg">
+                      <table class="table table-sm table-bordered">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nama Produk</th>
+                            <th scope="col">Harga Awal</th>
+                            <th scope="col">Diskon</th>
+                            <th scope="col">Harga Akhir</th>
+                            <th scope="col">Jumlah</th>
+                            <th scope="col">Sub Total</th>
+                            <th scope="col" class="text-center">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody id="cartTable">
+                          <!-- Data Cart -->
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-                
+
               </div>
             </div>
 
             <div class="row mb-3">
-            
+
               <div class="col-md-8">
 
                 <div class="card">
                   <div class="card-body">
-                    <form action="" method="post">
-                      
+                    <form id="formPayment" method="post" onsubmit="return false">
+
                       <div class="form-row">
                         <div class="form-group col-md-6">
-                          <label for="input1">Total</label>
-                          <input type="number" class="form-control" id="input1" value="Rp. 15.500.000" disabled>
+                          <label for="total_awal">Total</label>
+                          <input type="number" class="form-control" id="total_awal" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
-                          <label for="input2">Diskon</label>
-                          <input type="number" class="form-control" id="input2" value="Rp. 500.000" disabled>
+                          <label for="total_diskon">Total Diskon</label>
+                          <input type="number" class="form-control" id="total_diskon" value="" readonly>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="input3">Total Akhir</label>
-                        <input type="number" class="form-control" id="input3" value="Rp. 15.000.000" disabled>
+                        <label for="total_akhir">Total Akhir</label>
+                        <input type="number" class="form-control" id="total_akhir" value="" readonly>
                       </div>
                       <div class="form-row">
                         <div class="form-group col-md-6">
-                          <label for="inputAddress4">Bayar</label>
-                          <input type="number" class="form-control" id="inputAddress4">
+                          <label for="tunai">Bayar</label>
+                          <input type="number" class="form-control" id="tunai" name="tunai" onkeyup="uangKembalian()">
                         </div>
                         <div class="form-group col-md-6">
-                          <label for="input5">Kembalian</label>
-                          <input type="number" class="form-control" id="input5" value="" disabled>
+                          <label for="kembalian">Kembalian</label>
+                          <input type="number" class="form-control" id="kembalian" value="" readonly>
                         </div>
                       </div>
 
-                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="submit" class="btn btn-primary" id="prosesTransaksi" onclick='prosesOrder()'>Proses Transaksi</button>
 
                     </form>
                   </div>
@@ -240,7 +236,7 @@
       </div>
     </div>
   </main>
-  
+
   <!-- Modal - Cari Product -->
   <div class="modal fade" id="productModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="productModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -256,44 +252,53 @@
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Code</th>
-                <th scope="col">Product Name</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Action</th>
+                <th scope="col">Kode</th>
+                <th scope="col">Nama Produk</th>
+                <th scope="col">Kategori</th>
+                <th scope="col">Harga</th>
+                <th scope="col">Stok</th>
+                <th scope="col">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>KD001</td>
-                <td>Asus D12</td>
-                <td>Rp. 15.500.000</td>
-                <td>30</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-info"><i class="fas fa-check"></i> Select</button>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>KD002</td>
-                <td>MSI 2PL</td>
-                <td>Rp. 13.800.000</td>
-                <td>20</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-info"><i class="fas fa-check"></i> Select</button>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>KD003</td>
-                <td>Hardisk Seagate 500GB</td>
-                <td>Rp. 650.000</td>
-                <td>100</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-info"><i class="fas fa-check"></i> Select</button>
-                </td>
-              </tr>
+              <?php
+              // Memanggil Koneksi
+              require_once "../../../config/koneksi.php";
+
+              // Query Select data pada 2 tabel yang berelasi
+              $query = "SELECT 
+                            id_produk, nama, nama_kat, stok, harga
+                          FROM 
+                            tb_products 
+                          INNER JOIN 
+                            tb_categories 
+                          ON 
+                          tb_products.id_kat = tb_categories.id_kat;";
+
+              $sql = mysqli_query($koneksi, $query);
+              $no = 1;
+              ?>
+              <?php while ($data = mysqli_fetch_assoc($sql)) : ?>
+
+                <tr>
+                  <th scope="row"><?php echo $no++; ?></th>
+                  <td>KD<?php echo $data['id_produk']; ?></td>
+                  <td><?php echo ucfirst($data['nama']); ?></td>
+                  <td><?php echo ucfirst($data['nama_kat']); ?></td>
+                  <td>Rp. <?php echo number_format($data['harga'], 0, '', '.'); ?></td>
+                  <td><?php echo $data['stok']; ?></td>
+                  <td>
+                    <a href="edit-product.php?id=<?php echo $data['id_produk']; ?>" class="btn btn-sm btn-info" role="button" data-dismiss="modal" onclick="selectedItem(<? echo $data['id_produk']; ?>)">
+                      <i class="fas fa-check"></i> Select
+                    </a>
+                    <!-- <a href="edit-product.php?id=<?php //echo $data['id_produk']; 
+                                                      ?>" class="btn btn-info btn-sm" role="button">Edit</a>
+                    <a href="proses-delete-product.php?id=<?php //echo $data['id_produk']; 
+                                                          ?>" class="btn btn-danger btn-sm" role="button" onclick='return confirm("Yakin Hapus?")'>Delete</a> -->
+                  </td>
+                </tr>
+
+              <?php endwhile; ?>
             </tbody>
           </table>
         </div>
@@ -313,25 +318,208 @@
       </div>
     </footer>
   </div>
-  
+
   <!-- Jquery Core JS -->
   <script src="<? echo $base ?>./scripts/jquery-3.5.1.min.js"></script>
-  
+
   <!-- Bootstrap Core JS -->
   <script src="<? echo $base ?>./scripts/bootstrap.min.js"></script>
-  
+
   <!-- Plugin Datatables Core JS -->
   <script src="<? echo $base ?>./scripts/datatables.min.js"></script>
 
   <!-- Main JS -->
   <script>
-    // Datatables Plugin - Membuat fungsi yang dieksekusi secara continuously
-    setInterval(function() {
-      $(document).ready( function () {
-        $('#productModalTable').DataTable();
-      });
-    }, 200); // Waktu interval, eg. 1000 = 1 detik
+    $(document).ready(function() {
+      $('#productModalTable').DataTable();
+    });
+
+    window.addEventListener('load', showCart());
+
+    // Fungsi untuk menampilkan isi Cart - AJAX Request
+    function showCart() {
+      // Deklasri Variabel
+      var http = new XMLHttpRequest();
+      var res;
+
+      http.onreadystatechange = function() {
+        // Cek Status response
+        if (this.readyState == 4 && this.status == 200) {
+
+          // Konversi string response ke format json
+          res = JSON.parse(this.responseText);
+
+          if (res.status) {
+            // Deploy Response
+            document.getElementById("cartTable").innerHTML = res.response;
+            document.getElementById("invoice_number").innerHTML = res.data.invoice_number ? res.data.invoice_number : "";
+            document.getElementById("inv_total_harga").innerHTML = res.data.total_akhir ? res.data.total_akhir : "";
+            document.getElementById("total_awal").value = res.data.total_awal ? res.data.total_awal : "";
+            document.getElementById("total_diskon").value = res.data.total_diskon ? res.data.total_diskon : "";
+            document.getElementById("total_akhir").value = res.data.total_akhir ? res.data.total_akhir : "";
+          } else {
+            // Error Handling
+            alert("Terjadi kesalahan pada Server. Pesan Error : " + res.message);
+          }
+        }
+      };
+      // Mengirim Request
+      http.open("GET", "display-cart.php", true);
+      http.send();
+    }
+
+    // Fungsi untuk Select Item - AJAX Request
+    function selectedItem(kd_item) {
+      // Deklarasi Variabel
+      var http = new XMLHttpRequest();
+      var res;
+
+      // Menjalankan fungsi ketika response siap
+      http.onreadystatechange = function() {
+        // Cek Status response
+        if (this.readyState == 4 && this.status == 200) {
+
+          // Konversi string response ke format json
+          res = JSON.parse(this.responseText);
+
+          // Memasukan data ke value input Select Item
+          document.getElementById("kd_item").value = res.id_produk;
+          document.getElementById("nama_item").value = res.nama;
+          document.getElementById("harga_item").value = res.harga;
+        }
+      };
+      // Mengirim request
+      http.open("GET", "proses-select-item.php?kd=" + kd_item, true);
+      http.send();
+    }
+
+    // Fungsi untuk Insert Item ke Cart - AJAX
+    function insertItemToCart() {
+      // Deklarasi Variabel
+      var http = new XMLHttpRequest();
+      var req, res;
+
+      // Objek untuk koleksi isi Form Select Item
+      const formValues = {
+        id_produk: document.querySelector("#formSelectedItem #kd_item"),
+        diskon_produk: document.querySelector("#formSelectedItem #diskon_item"),
+        jumlah_produk: document.querySelector("#formSelectedItem #jumlah_item")
+      };
+
+      // Menyiapkan Request
+      req = `id_produk=${formValues.id_produk.value}&diskon_produk=${formValues.diskon_produk.value}&jumlah_produk=${formValues.jumlah_produk.value}`;
+
+      // Menjalankan fungsi ketika response siap
+      http.onreadystatechange = function() {
+        // Cek Status response
+        if (this.readyState == 4 && this.status == 200) {
+
+          // Konversi string response ke format json
+          res = JSON.parse(this.responseText);
+
+          if (res.status) {
+            // Menjalankan Fungsi Show Cart
+            showCart();
+          } else {
+            // Error Handling
+            alert("Terjadi kesalahan pada Server. Pesan Error : " + res.message);
+          }
+        }
+      };
+      // Mengirim Request
+      http.open("POST", "proses-insert-item-tocart.php", true);
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // digunakan pada metode POST untuk set req berformat key-value pair string
+      http.send(req);
+    }
+
+    // Fungsi untuk menghapus isi cart - AJAX
+    function deleteItemFromCart(id_produk) {
+
+      if (confirm('Hapus Item Cart?')) {
+        // Deklarasi Variabel
+        var http = new XMLHttpRequest();
+        var req, res;
+
+        // Menyiapkan Request
+        req = `id_produk=${id_produk}`;
+
+        // Menjalankan fungsi ketika response siap
+        http.onreadystatechange = function() {
+          // Cek Status response
+          if (this.readyState == 4 && this.status == 200) {
+
+            // Konversi string response ke format json
+            res = JSON.parse(this.responseText);
+
+            if (res.status) {
+              // Menjalankan Fungsi Show Cart
+              showCart();
+            } else {
+              // Error Handling
+              alert("Terjadi kesalahan pada Server. Pesan Error : " + res.message);
+            }
+          }
+        };
+        // Mengirim request
+        http.open("GET", "proses-delete-item-fromcart.php?" + req, true);
+        http.send();
+      }
+    }
+
+    // Fungsi untuk proses order - AJAX
+    function prosesOrder() {
+
+      if (confirm('Input Order?')) {
+        // Deklarasi Variabel
+        var http = new XMLHttpRequest();
+        var req, res;
+
+        // Mengambil Data Form Payment
+        const formPaymentVal = {
+          total_bayar: document.querySelector('#formPayment #tunai'),
+          submit: document.querySelector('#formPayment #prosesTransaksi')
+        };
+
+        // Menyiapkan Request
+        req = `total_bayar=${formPaymentVal.total_bayar.value}`;
+
+        // Menjalankan fungsi ketika response siap
+        http.onreadystatechange = function() {
+          // Cek Status response
+          if (this.readyState == 4 && this.status == 200) {
+
+            // Konversi string response ke format json
+            res = JSON.parse(this.responseText);
+
+            if (res.status) {
+              // Menampilkan Alert Sukses
+              alert(res.message);
+              showCart();
+            } else {
+              // Error Handling
+              alert("Terjadi kesalahan pada Server. Pesan Error : " + res.message);
+            }
+          }
+        };
+        // Mengirim Request
+        http.open("POST", "proses-input-order.php", true);
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.send(req);
+      }
+    }
+
+    // Fungsi untuk perhitungan pembayaran
+    function uangKembalian() {
+      var tunai = document.getElementById('tunai').value;
+      var total = document.getElementById('total_akhir').value;
+      var kembalian = parseInt(tunai) - total;
+
+      if (!isNaN(kembalian)) {
+        document.getElementById('kembalian').value = kembalian;
+      }
+    }
   </script>
 
 </body>
+
 </html>

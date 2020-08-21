@@ -1,15 +1,16 @@
 <?php
 
-  // Mengambil Base URL
-  include "../../../config/url-base.php";
+// Mengambil Base URL
+include "../../../config/url-base.php";
 
-  // Mengecek Status Login Session
-  require_once "../../auth/login-session.php";
+// Mengecek Status Login Session
+require_once "../../auth/login-session.php";
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,6 +29,7 @@
   <link rel="stylesheet" href="<? echo $base ?>./styles/custom.css">
 
 </head>
+
 <body>
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -35,7 +37,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -55,7 +57,7 @@
 
         <!-- Includes Navbar Kanan -->
         <? include "../../includes/navbar-right.php" ?>
-        
+
       </ul>
     </div>
   </nav>
@@ -89,41 +91,106 @@
             <div class="p-2 mb-2">
               <a class="btn btn-md btn-primary" href="<? echo $base ?>./app/pages/products/add-category.php" role="button">Add New Category</a>
             </div>
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Category Name</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Laptop</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/products/edit-category.php?id=" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Laptop</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/products/edit-category.php?id=" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Hardisk</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/products/edit-category.php?id=" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+            <?php if (isset($_GET['status']) && $_GET['status'] == "sukses_add") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil menambah Kategori baru!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_add") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal menambah Kategori baru!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "sukses_update") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil memperbaharui Kategori!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_update") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal memperbaharui Kategori!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "sukses_delete") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil menghapus Kategori!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_delete") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal menghapus Kategori!
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+
+            <div class="table-responsive-lg">
+              <table class="table table-striped table-sm" id="categoriesTable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nama Kategori</th>
+                    <th scope="col">Deskripsi Kategori</th>
+                    <th scope="col">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <?php
+                  // Memanggil Koneksi
+                  require_once "../../../config/koneksi.php";
+
+                  $query = "SELECT * FROM tb_categories";
+                  $sql = mysqli_query($koneksi, $query);
+                  $no = 1;
+                  ?>
+
+                  <?php while ($data = mysqli_fetch_assoc($sql)) : ?>
+
+                    <tr>
+                      <th scope="row"><?php echo $no++; ?></th>
+                      <td><?php echo ucfirst($data['nama_kat']); ?></td>
+                      <td><?php echo ucfirst($data['deskripsi_kat']); ?></td>
+                      <td>
+                        <a href="edit-category.php?id=<?php echo $data['id_kat']; ?>" class="btn btn-info btn-sm" role="button">Edit</a>
+                        <a href="proses-delete-category.php?id=<?php echo $data['id_kat']; ?>" class="btn btn-danger btn-sm" role="button" onclick='return confirm("Yakin Hapus?")'>Delete</a>
+                      </td>
+                    </tr>
+
+                  <?php endwhile; ?>
+                </tbody>
+              </table>
+            </div>
 
           </div>
         </div>
@@ -140,12 +207,24 @@
 
   <!-- Jquery Core JS -->
   <script src="<? echo $base ?>./scripts/jquery-3.5.1.min.js"></script>
-  
+
   <!-- Bootstrap Core JS -->
   <script src="<? echo $base ?>./scripts/bootstrap.min.js"></script>
-  
+
   <!-- Plugin Datatables Core JS -->
   <script src="<? echo $base ?>./scripts/datatables.min.js"></script>
 
+  <!-- JS untuk Plugin untuk Filtering -->
+  <script>
+    // Menghilangkan Pesan Alert dalam beberapa detik
+    $('.alert').delay(3000).fadeOut(300);
+
+    // Plugin Pagination dan Filter menggunakan Datatables
+    $(document).ready(function() {
+      $('#categoriesTable').DataTable();
+    });
+  </script>
+
 </body>
+
 </html>

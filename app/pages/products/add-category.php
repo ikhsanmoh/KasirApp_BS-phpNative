@@ -87,12 +87,30 @@
           <div class="card-header">Add Category</div>
             <div class="card-body">
 
+            <?php if ( isset($_GET['status']) && $_GET['status'] == "err_01") : ?>
+                
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Nama Kategori</strong> sudah ada!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+
               <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/products/proses-add-category.php" method="post">
                 <div class="form-group">
-                  <label for="name">Category Name</label>
-                  <input type="text" class="form-control" id="name" name="name" required>
+                  <label for="nama">Nama Kategori</label>
+                  <input type="text" class="form-control" id="nama" name="nama" required>
                 </div>
-
+                <div class="form-group">
+                  <label for="desc">Deskripsi Kategori</label>
+                  <textarea class="form-control" id="desc" name="deskripsi" rows="3"></textarea>
+                </div>
                 <div class="form-group float-right">
                   <a href="<? echo $base; ?>app/pages/products/category.php" role="button" class="btn btn-danger">Cancel</a>
                   <input type="submit" class="btn btn-success" name="form_add_category">

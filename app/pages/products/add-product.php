@@ -63,7 +63,7 @@
   <div class="custom-header bg-secondary">
     <div class="container">
       <div class="row">
-        <h1 class="h2"><i class="fab fa-product-hunt"></i> Products - Items</h1>
+        <h1 class="h2"><i class="fab fa-product-hunt"></i> Products - Items </h1>
       </div>
     </div>
   </div>
@@ -86,22 +86,52 @@
           <div class="card-header">Add Product</div>
           <div class="card-body">
 
+            <?php 
+              // Memanggil Koneksi
+              require_once "../../../config/koneksi.php";
+
+              $query = "SELECT id_kat, nama_kat FROM tb_categories";
+              $sql = mysqli_query($koneksi, $query);
+            ?>
+
+            <?php if ( isset($_GET['status']) && $_GET['status'] == "err_01") : ?>
+                 
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Nama Produk</strong> sudah ada!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+
             <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/products/proses-add-product.php" method="post">
               <div class="form-group">
-                <label for="name">Product Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="name">Nama Produk</label>
+                <input type="text" class="form-control" id="name" name="nama" required>
               </div>
               <div class="form-group">
-                <label for="category">Category</label>
-                <input type="text" class="form-control" id="category" name="category">
+                <label for="kat">Kategori</label>
+                <select class="custom-select" id="kat" name="kategori">
+                  <option value="0" selected>-- Pilih --</option>
+                  <?php
+                    foreach ($sql as $data) {
+                      echo "<option value=".$data['id_kat'].">". ucfirst($data['nama_kat']) ."</option>";  
+                    }
+                  ?>
+                </select>
               </div>
               <div class="form-group">
-                <label for="stock">Stock</label>
-                <input type="number" class="form-control" id="stock" name="stock" required>
+                <label for="harga">Harga</label>
+                <input type="number" class="form-control" id="harga" name="harga" required>
               </div>
               <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" class="form-control" id="price" name="price" required>
+                <label for="stok">Stok</label>
+                <input type="number" class="form-control" id="stok" name="stok">
               </div>
 
               <div class="form-group float-right">

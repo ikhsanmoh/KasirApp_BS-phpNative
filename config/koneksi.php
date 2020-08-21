@@ -1,6 +1,7 @@
 <?php
 
-  $host = "localhost";
+  $host = "localhost:3306";
+  // $port = "3306";
   $username = "root";
   $pass = "";
   $dbname = "ujikom_kasirApp";

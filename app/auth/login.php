@@ -29,7 +29,7 @@
     <input class="btn btn-primary btn-block" type="submit" value="Masuk" name="login_form">
     <div class="mt-2">
       <!-- <p class="mb-0"><a href="forgot-password.php" class="small">Lupa Password?</a></p> -->
-      <a href="daftar.php" class="small">Daftar</a>
+      <!-- <a href="daftar.php" class="small">Daftar</a> -->
     </div>
 
     <?php if ( isset($_GET['status']) ) : ?>

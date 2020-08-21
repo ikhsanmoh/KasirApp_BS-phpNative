@@ -87,26 +87,87 @@
           <div class="card-header">Edit User</div>
           <div class="card-body">
           
-            <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/users/proses-edit-user.php" method="post">
+          <?php 
+              // Memanggil Koneksi
+              require_once "../../../config/koneksi.php";
+
+              // Mengambil id dari URL
+              $id = $_GET['id']; 
+
+              // Query untuk mengambil data id dari database
+              $query_1 = "SELECT * FROM tb_users WHERE id LIKE '$id'";
+              
+              // Eksekusi query 1
+              $sql_1 = mysqli_query($koneksi, $query_1);
+              $data = mysqli_fetch_assoc($sql_1);
+
+              // Mengecek Status Query
+              if ( !mysqli_num_rows($sql_1) ) {
+                die("Id Tidak Ditemukan!");
+              }
+            ?>
+
+            <?php if ( isset($_GET['status']) && $_GET['status'] == "err_01") : ?>
+              
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Nama</strong> atau <strong>Email</strong> sudah terdaftar!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+          
+            <form class="w-75 mx-auto" action="<?php echo $base; ?>app/pages/users/proses-edit-user.php" method="post">
+              <input type="number" name="id" value="<?php echo $data['id']; ?>" hidden>
+              <input type="hidden" name="nama_lama" value="<?php echo $data['nama']; ?>">
+              <input type="hidden" name="email_lama" value="<?php echo $data['email']; ?>">
               <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="nama">Nama</label>
+                <input type="text" class="form-control" id="nama" name="nama_baru" value="<?php echo $data['nama']; ?>" required>
+              </div>
+              <div class="form-group">
+                <label for="jk">Jenis Kelamin</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="jenis_kelamin" id="l" value="L" <? if( $data['jenis_kelamin'] == "L" ) echo "checked";?>>
+                  <label class="form-check-label" for="l">
+                    Laki-laki
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="jenis_kelamin" id="p" value="P" <? if( $data['jenis_kelamin'] == "P" ) echo "checked";?>>
+                  <label class="form-check-label" for="p">
+                    Perempuan
+                  </label>
+                </div>
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" required>
+                <input type="email" class="form-control" id="email" name="email_baru" value="<?php echo $data['email']; ?>" required>
               </div>
               <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+              <label for="lv">Level</label>
+                <select class="form-control" id="lv" name="level">
+                  <option>-- Pilih --</option>
+                  <option value="admin" <? if( $data['level_user'] == "admin" ) echo "selected";?>>admin</option>
+                  <option value="kasir" <? if( $data['level_user'] == "kasir" ) echo "selected";?>>kasir</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                <label for="alamat">Alamat</label>
+                <textarea class="form-control" id="alamat" name="alamat" rows="3"><?php echo $data['alamat']; ?></textarea>
+              </div>
+              <div class="form-group">
+                <label for="no_tlp">Nomor Telepon</label>
+                <input type="number" class="form-control" id="no_tlp" name="no_telepon" value="<?php echo $data['no_telepon']; ?>" required>
               </div>
 
               <div class="form-group float-right">
-                <a href="<? echo $base; ?>app/pages/users/user.php" role="button" class="btn btn-danger">Cancel</a>
+                <a href="<?php echo $base; ?>app/pages/users/user.php" role="button" class="btn btn-danger">Cancel</a>
                 <input type="submit" class="btn btn-success" name="form_edit_user">
               </div>
             </form>

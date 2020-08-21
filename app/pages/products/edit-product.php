@@ -86,22 +86,82 @@
           <div class="card-header">Edit Product</div>
           <div class="card-body">
 
+            <?php 
+              // Memanggil Koneksi
+              require_once "../../../config/koneksi.php";
+
+              // Mengambil id dari URL
+              $id = $_GET['id']; 
+
+              // Query untuk mengambil data produk dari database
+              $query_1 = "SELECT 
+                          id_produk, tb_products.id_kat, nama, nama_kat, stok, harga
+                        FROM 
+                          tb_products 
+                        INNER JOIN 
+                          tb_categories 
+                        ON 
+                          tb_products.id_kat = tb_categories.id_kat
+                        WHERE
+                          id_produk LIKE '$id'";
+              
+              // Eksekusi query 1
+              $sql_1 = mysqli_query($koneksi, $query_1);
+              $data = mysqli_fetch_assoc($sql_1);
+
+              // Mengecek Status Query
+              if ( !mysqli_num_rows($sql_1) ) {
+                die("Id Tidak Ditemukan!");
+              }
+
+              // Query untuk mengambil data kategori dari database
+              $query_2 = "SELECT id_kat, nama_kat FROM tb_categories";
+
+              // Eksekusi query 2
+              $sql_2 = mysqli_query($koneksi, $query_2);
+            ?>
+
+            <?php if ( isset($_GET['status']) && $_GET['status'] == "err_01") : ?>
+                              
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Nama Produk</strong> sudah ada!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+
             <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/products/proses-edit-product.php" method="post">
+              <input type="hidden" name="id_produk" value="<?php echo $data['id_produk'] ?>">
+              <input type="hidden" name="nama_lama" value="<?php echo $data['nama'] ?>">
               <div class="form-group">
-                <label for="name">Product Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="nama">Nama Produk</label>
+                <input type="text" class="form-control" id="nama" name="nama_baru" value="<?php echo $data['nama'] ?>" required>
               </div>
               <div class="form-group">
-                <label for="category">Category</label>
-                <input type="text" class="form-control" id="category" name="category">
+                <label for="kat">Kategori</label>
+                <select class="custom-select" id="kat" name="kategori">
+                  <option value="0">-- Pilih --</option>
+                  <?php
+                    foreach ($sql_2 as $dataKategori) {
+                      // $select = ($dataKategori['id_kat'] == $data['id_kat']) ? "selected" : "";
+                      echo "<option value=".$dataKategori['id_kat'].">". ucfirst($dataKategori['nama_kat']) ."</option>";  
+                    }
+                  ?>
+                </select>
               </div>
               <div class="form-group">
-                <label for="stock">Stock</label>
-                <input type="number" class="form-control" id="stock" name="stock" required>
+                <label for="harga">Harga</label>
+                <input type="number" class="form-control" id="harga" name="harga" value="<?php echo $data['harga'] ?>" required>
               </div>
               <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" class="form-control" id="price" name="price" required>
+                <label for="stok">Stok</label>
+                <input type="number" class="form-control" id="stok" name="stok" value="<?php echo $data['stok'] ?>">
               </div>
 
               <div class="form-group float-right">

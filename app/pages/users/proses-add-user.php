@@ -1,5 +1,8 @@
 <?php
 
+  // Mengambil Base URL
+  include "../../../config/url-base.php";
+
   // Memanggil Koneksi
   require "../../../config/koneksi.php";
   
@@ -9,12 +12,11 @@
   if ( isset($_POST['form_add_user']) ) {
     
     $nama = $_POST['nama'];
+    $jenis_kelamin = $_POST['jenis_kelamin'];
     $email = $_POST['email'];
-
-    // Nilai Default
-    $alamat = "0";
-    $no_tlp = "0";
-    $lv = "admin";
+    $lv = $_POST['level'];
+    $alamat = $_POST['alamat'];
+    $no_tlp = $_POST['no_telepon'];
 
     // Meng-Encript Password
     $password = md5($_POST['password']);;
@@ -44,16 +46,19 @@
       } else {
     
         // Query Insert untuk menyimpan data pendaftar baru
-        $query_2 = "INSERT INTO tb_users (nama, email, pass, alamat, no_telepon, level_user) VALUE ('$nama', '$email', '$password', '$alamat', '$no_tlp', '$lv')";
+        $query_2 = "INSERT INTO 
+                      tb_users (nama, jenis_kelamin, email, pass, alamat, no_telepon, level_user) 
+                    VALUE 
+                      ('$nama', '$jenis_kelamin', '$email', '$password', '$alamat', '$no_tlp', '$lv')";
         
         // Eksekusi Query 2
         $sql_2 = mysqli_query($koneksi, $query_2);
 
         // Kondisi proses penyimpanan data pendaftar
         if ($sql_2) {
-          header('location: '. $base .'app/pages/users/add-user.php?status=sukses');
+          header('location: '. $base .'app/pages/users/user.php?status=sukses_add');
         } else {
-          header('location: '. $base .'app/pages/users/add-user.php?status=gagal');
+          header('location: '. $base .'app/pages/users/user.php?status=gagal_add');
         }
       
       }

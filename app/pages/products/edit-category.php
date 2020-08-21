@@ -87,12 +87,52 @@
           <div class="card-header">Edit Category</div>
             <div class="card-body">
 
-              <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/products/proses-edit-category.php" method="post">
-                <div class="form-group">
-                  <label for="name">Category Name</label>
-                  <input type="text" class="form-control" id="name" name="name" required>
-                </div>
+            <?php 
+              // Memanggil Koneksi
+              require_once "../../../config/koneksi.php";
 
+              // Mengambil id dari URL
+              $id = $_GET['id']; 
+
+              // Query untuk mengambil data id dari database
+              $query_1 = "SELECT * FROM tb_categories WHERE id_kat LIKE '$id'";
+              
+              // Eksekusi query 1
+              $sql_1 = mysqli_query($koneksi, $query_1);
+              $data = mysqli_fetch_assoc($sql_1);
+
+              // Mengecek Status Query
+              if ( !mysqli_num_rows($sql_1) ) {
+                die("Id Tidak Ditemukan!");
+              }
+            ?>
+
+            <?php if ( isset($_GET['status']) && $_GET['status'] == "err_01") : ?>
+                
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Nama Kategori</strong> sudah ada!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+  
+              <form class="w-75 mx-auto" action="<? echo $base; ?>app/pages/products/proses-edit-category.php" method="post">
+                <input type="hidden" name="id" value="<? echo $data['id_kat']; ?>">
+                <input type="hidden" name="nama_lama" value="<? echo $data['nama_kat']; ?>">
+                <div class="form-group">
+                  <label for="nama">Nama Kategori</label>
+                  <input type="text" class="form-control" id="nama" name="nama_baru" value="<? echo $data['nama_kat']; ?>" required>
+                </div>
+                <div class="form-group">
+                  <label for="desc">Deskripsi Kategori</label>
+                  <textarea class="form-control" id="desc" name="deskripsi" rows="3"><? echo $data['deskripsi_kat']; ?></textarea>
+                </div>
                 <div class="form-group float-right">
                   <a href="<? echo $base; ?>app/pages/products/category.php" role="button" class="btn btn-danger">Cancel</a>
                   <input type="submit" class="btn btn-success" name="form_edit_category">

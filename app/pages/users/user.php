@@ -1,14 +1,15 @@
 <?php
 
-  // Mengambil Base URL
-  include "../../../config/url-base.php";
+// Mengambil Base URL
+include "../../../config/url-base.php";
 
-  // Mengecek Status Login Session
-  require_once "../../auth/login-session.php";
+// Mengecek Status Login Session
+require_once "../../auth/login-session.php";
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +28,7 @@
   <link rel="stylesheet" href="<? echo $base ?>./styles/custom.css">
 
 </head>
+
 <body>
 
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -34,7 +36,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -89,53 +91,120 @@
             <div class="p-2 mb-2">
               <a class="btn btn-md btn-primary" href="<? echo $base ?>./app/pages/users/add-user.php" role="button">Add New User</a>
             </div>
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">ID</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Level</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>U01</td>
-                  <td>Person 1</td>
-                  <td>person1@gmail.com</td>
-                  <td>Admin</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/users/edit-user.php?id=" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>U02</td>
-                  <td>Person 2</td>
-                  <td>person2@gmail.com</td>
-                  <td>Kasir</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/users/edit-user.php?id=" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>U03</td>
-                  <td>Person 3</td>
-                  <td>person3@gmail.com</td>
-                  <td>Kasir</td>
-                  <td>
-                    <a class="btn btn-sm btn-info" href="<? echo $base ?>./app/pages/users/edit-user.php?id=" role="button">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="#" role="button">Delete</a> 
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+
+            <?php if (isset($_GET['status']) && $_GET['status'] == "sukses_add") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil menambah User baru!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_add") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal menambah User baru!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "sukses_update") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil memperbaharui User!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_update") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal memperbaharui User!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "sukses_delete") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-success" role="alert">
+                    Berhasil menghapus User!
+                  </div>
+                </div>
+              </div>
+
+            <?php elseif (isset($_GET['status']) && $_GET['status'] == "gagal_delete") : ?>
+
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="alert alert-danger" role="alert">
+                    Gagal menghapus User!
+                  </div>
+                </div>
+              </div>
+
+            <?php endif; ?>
+
+            <div class="table-responsive-lg">
+              <table class="table table-striped table-sm" id="userTable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Jenis Kelamin</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Nomor Telepon</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <?php
+
+                  // Memanggil Koneksi
+                  require_once "../../../config/koneksi.php";
+
+                  $query = "SELECT * FROM tb_users";
+                  $sql = mysqli_query($koneksi, $query);
+                  $no = 1;
+
+                  $dataSum = mysqli_num_rows($sql);
+                  ?>
+
+                  <?php while ($data = mysqli_fetch_assoc($sql)) : ?>
+
+                    <tr>
+                      <th scope="row"><?php echo $no++; ?></th>
+                      <td><?php echo $data['nama']; ?></td>
+                      <td>
+                        <?php echo ($data['jenis_kelamin'] == "L") ? 'Laki-laki' : 'Perempuan'; ?>
+                      </td>
+                      <td><?php echo $data['email']; ?></td>
+                      <td><?php echo $data['no_telepon']; ?></td>
+                      <td><?php echo $data['level_user']; ?></td>
+                      <td>
+                        <a href="edit-user.php?id=<?php echo $data['id']; ?>" class="btn btn-info btn-sm" role="button">Edit</a>
+                        <a href="proses-delete-user.php?id=<?php echo $data['id']; ?>" class="btn btn-danger btn-sm" role="button" onclick='return confirm("Yakin Hapus?")'>Delete</a>
+                      </td>
+                    </tr>
+
+                  <?php endwhile; ?>
+
+                </tbody>
+              </table>
+            </div>
+
+
           </div>
         </div>
 
@@ -148,15 +217,27 @@
       <span class="text-muted">&copy; Ikhsan Mohamad 2020</span>
     </div>
   </footer>
-  
+
   <!-- Jquery Core JS -->
   <script src="<? echo $base ?>./scripts/jquery-3.5.1.min.js"></script>
-  
+
   <!-- Bootstrap Core JS -->
   <script src="<? echo $base ?>./scripts/bootstrap.min.js"></script>
-  
+
   <!-- Plugin Datatables Core JS -->
   <script src="<? echo $base ?>./scripts/datatables.min.js"></script>
 
+  <!-- JS untuk Plugin untuk Filtering -->
+  <script>
+    // Menghilangkan Pesan Alert dalam beberapa detik
+    $('.alert').delay(3000).fadeOut(300);
+
+    // Plugin Pagination dan Filter menggunakan Datatables
+    $(document).ready(function() {
+      $('#userTable').DataTable();
+    });
+  </script>
+
 </body>
+
 </html>
